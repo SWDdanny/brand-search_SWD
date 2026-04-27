@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 import urllib.parse
 
 # --- 設定區 ---
-SPREADSHEET_ID = '1jb7MZ5w00zNs3T_I7lxT24nEChudAUnUnpXLm77sOXU' 
+SPREADSHEET_ID = '1qLgr6FrTGVEDdc_Ped-js1wdPBQ0_7y1lT2ClOwr-OI' 
 SHEET_NAME = '品牌名單'
 
 def get_gspread_service():
