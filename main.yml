@@ -1,0 +1,39 @@
+name: 自動品牌名單爬蟲
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 每天凌晨一點執行
+  workflow_dispatch:      # 允許 GAS 手動觸發
+
+# --- 新增：併發控制邏輯 [需求：解決重複觸發問題] ---
+concurrency:
+  group: crawler-group
+  cancel-in-progress: true  # 如果新的觸發進來了，就取消掉正在排隊或執行中的舊任務
+
+jobs:
+  run_crawler:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 改為 write，若需要將執行紀錄 push 回 repo 時才不會報錯
+
+    steps:
+      - name: 複製程式碼
+        uses: actions/checkout@v4
+
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安裝必要套件
+        run: |
+          python -m pip install --upgrade pip
+          # 檢查是否有 requirements.txt，有的話用 pip install -r 更好維護
+          pip install google-api-python-client google-auth pandas beautifulsoup4 requests googlesearch-python
+
+      - name: 執行爬蟲程式
+        env:
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        run: python crawler.py

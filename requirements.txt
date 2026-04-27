@@ -1,0 +1,7 @@
+streamlit
+pandas
+google-api-python-client
+google-auth
+beautifulsoup4
+requests
+googlesearch-python
